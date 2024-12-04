@@ -58,3 +58,21 @@ func IsDifferenceSafe(i int) bool {
 	}
 	return false
 }
+
+func LinesTo2DArray(lines []string) ([][]rune, int, int) {
+	var result [][]rune
+	y := len(lines) // Number of rows (y-axis)
+	x := 0          // Number of columns (x-axis)
+
+	for _, line := range lines {
+		row := []rune(line)
+		result = append(result, row)
+
+		// Update the maximum width (x-axis) if necessary
+		if len(row) > x {
+			x = len(row)
+		}
+	}
+
+	return result, x, y
+}
