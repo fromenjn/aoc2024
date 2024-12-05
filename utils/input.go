@@ -4,6 +4,8 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"strconv"
+	"strings"
 )
 
 // ReadFile reads the contents of a file and returns it as a string slice.
@@ -75,4 +77,34 @@ func LinesTo2DArray(lines []string) ([][]rune, int, int) {
 	}
 
 	return result, x, y
+}
+
+func ArrayContains(slice []int, element int) bool {
+	for _, v := range slice {
+		if v == element {
+			return true
+		}
+	}
+	return false
+}
+
+func ProcessCommaSeparatedIntegers(line string) ([]int, error) {
+	parts := strings.Split(line, ",")
+	result := make([]int, 0, len(parts))
+	for _, part := range parts {
+		num, err := strconv.Atoi(strings.TrimSpace(part))
+		if err != nil {
+			return nil, fmt.Errorf("invalid number: %s", part)
+		}
+		result = append(result, num)
+	}
+	return result, nil
+}
+
+func GetMiddleElement(arr []int) int {
+	if len(arr)%2 == 0 {
+		return arr[len(arr)/2]
+	} else {
+		return arr[len(arr)/2]
+	}
 }
