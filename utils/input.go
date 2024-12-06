@@ -108,3 +108,27 @@ func GetMiddleElement(arr []int) int {
 		return arr[len(arr)/2]
 	}
 }
+
+func PrintRune2DArray(arr [][]rune) {
+	for _, row := range arr {
+		fmt.Println(string(row))
+	}
+}
+
+func HasNeighbor(arr [][]rune, neighbor rune, x, y int) bool {
+	sizeY := len(arr[0])
+	sizeX := len(arr)
+	if x > 0 && arr[x-1][y] == neighbor {
+		return true
+	}
+	if x < sizeX-1 && arr[x+1][y] == neighbor {
+		return true
+	}
+	if y > 0 && arr[x][y-1] == neighbor {
+		return true
+	}
+	if y < sizeY-1 && arr[x][y+1] == neighbor {
+		return true
+	}
+	return false
+}
