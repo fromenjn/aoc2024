@@ -35,12 +35,11 @@ func IsGuardOut(m [][]rune, position GuardPosition, sizeX int, sizeY int) bool {
 	return false
 }
 
-func GuardWalk(m [][]rune, sizeX int, sizeY int, position GuardPosition, direction GuardDirection, count int, directions []GuardDirection, walkedPositions []GuardPosition) int {
+func GuardWalk(m [][]rune, sizeX int, sizeY int, position GuardPosition, direction GuardDirection, count int, directions []GuardDirection) int {
 	if m[position.X][position.Y] == '.' {
 		m[position.X][position.Y] = 'X'
 		count++
 	}
-	walkedPositions = append(walkedPositions, GuardPosition{X: position.X, Y: position.Y, SavedDirection: direction})
 	futurePosition := GuardMove(m, position, direction)
 	if IsGuardOut(m, futurePosition, sizeX, sizeY) {
 		return count
@@ -52,24 +51,15 @@ func GuardWalk(m [][]rune, sizeX int, sizeY int, position GuardPosition, directi
 			return count
 		}
 	}
-	return GuardWalk(m, sizeX, sizeY, futurePosition, direction, count, directions, walkedPositions)
+	return GuardWalk(m, sizeX, sizeY, futurePosition, direction, count, directions)
 }
 
-func DoesGuardWalkInLoop(m [][]rune, sizeX int, sizeY int, position GuardPosition, direction GuardDirection, directions []GuardDirection, walkedPositions []GuardPosition) bool {
-	if m[position.X][position.Y] == '.' {
-		m[position.X][position.Y] = 'X'
+func DoesGuardWalkInLoop(m [][]rune, sizeX int, sizeY int, position GuardPosition, direction GuardDirection, directions []GuardDirection) bool {
+	//If the guard returns to the same position AND direction, then he is stuck in a loop
+	if m[position.X][position.Y] == direction.Character {
+		return true
 	}
-
-	//If the guard returns to the same position AND direction, then he is be stuck in a loop
-	newWalkedPosition := GuardPosition{X: position.X, Y: position.Y}
-	for w := 0; w < len(walkedPositions); w++ {
-		if walkedPositions[w].X == newWalkedPosition.X && walkedPositions[w].Y == newWalkedPosition.Y {
-			if walkedPositions[w].SavedDirection.Character == direction.Character {
-				return true
-			}
-		}
-	}
-	walkedPositions = append(walkedPositions, GuardPosition{X: position.X, Y: position.Y, SavedDirection: direction})
+	m[position.X][position.Y] = direction.Character
 	futurePosition := GuardMove(m, position, direction)
 	if IsGuardOut(m, futurePosition, sizeX, sizeY) {
 		return false
@@ -81,5 +71,5 @@ func DoesGuardWalkInLoop(m [][]rune, sizeX int, sizeY int, position GuardPositio
 			return false
 		}
 	}
-	return DoesGuardWalkInLoop(m, sizeX, sizeY, futurePosition, direction, directions, walkedPositions)
+	return DoesGuardWalkInLoop(m, sizeX, sizeY, futurePosition, direction, directions)
 }
