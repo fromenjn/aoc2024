@@ -79,7 +79,6 @@ func main() {
 				if utils.DoesGuardWalkInLoop(newMap, sizeX, sizeY, startPosition, startDirection, directions) {
 					countObstacles++
 				}
-				newMap[i][j] = '.'
 			}
 		}
 	}
