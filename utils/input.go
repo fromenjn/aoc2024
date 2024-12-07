@@ -88,6 +88,19 @@ func ArrayContains(slice []int, element int) bool {
 	return false
 }
 
+func LineToIntArray(line string) ([]int, error) {
+	parts := strings.Fields(line)
+	result := make([]int, 0, len(parts))
+	for _, part := range parts {
+		num, err := strconv.Atoi(strings.TrimSpace(part))
+		if err != nil {
+			return nil, fmt.Errorf("invalid number: %s", part)
+		}
+		result = append(result, num)
+	}
+	return result, nil
+}
+
 func ProcessCommaSeparatedIntegers(line string) ([]int, error) {
 	parts := strings.Split(line, ",")
 	result := make([]int, 0, len(parts))
