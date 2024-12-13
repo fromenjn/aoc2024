@@ -145,3 +145,17 @@ func HasNeighbor(arr [][]rune, neighbor rune, x, y int) bool {
 	}
 	return false
 }
+
+func Min(a, b int64) int64 {
+	if a < b {
+		return a
+	}
+	return b
+}
+
+func Max(a, b int64) int64 {
+	if a > b {
+		return a
+	}
+	return b
+}
