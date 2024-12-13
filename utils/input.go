@@ -159,3 +159,36 @@ func Max(a, b int64) int64 {
 	}
 	return b
 }
+
+func Gcd(a, b int64) int64 {
+	if b == 0 {
+		return a
+	}
+	return Gcd(b, a%b)
+}
+
+func Ppcm(a, b int64) int64 {
+	if a == 0 || b == 0 {
+		return 0
+	}
+	return a * b / Gcd(a, b)
+}
+
+func EuclideanDivision(a, b int64) (quotient, remainder int64) {
+	if b == 0 {
+		panic("division by zero")
+	}
+	quotient = a / b
+	remainder = a % b
+	// Adjust to ensure the remainder is non-negative
+	if remainder < 0 {
+		if b > 0 {
+			quotient--
+			remainder += b
+		} else {
+			quotient++
+			remainder -= b
+		}
+	}
+	return
+}

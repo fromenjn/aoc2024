@@ -167,56 +167,29 @@ func naiveClawGame(game *ClawGame, currentBestSolution int64) (int64, bool) {
 	return currentBestSolution, hasSolution
 }
 
-func naiveClawGameNoLimit(game *ClawGame, currentBestSolution int64) (int64, bool) {
+// after spoiler
+// a b
+// c d
+func linearAlgebraBeatsMe(game *ClawGame, currentBestSolution int64) (int64, bool) {
 	buttonA := game.ClawButtons[0]
 	buttonB := game.ClawButtons[1]
+	prizePos := game.PrizeRelativePos
 	hasSolution := false
-	stepAX := buttonA.Pos.X
-	stepAY := buttonA.Pos.Y
-	stepBX := buttonB.Pos.X
-	stepBY := buttonB.Pos.Y
-	maxStepsA := utils.Min(game.PrizeRelativePos.Y/stepAY+1, game.PrizeRelativePos.X/stepAX+1)
-	maxStepsB := utils.Min(game.PrizeRelativePos.Y/stepBY+1, game.PrizeRelativePos.X/stepBX+1)
-	remainingX := game.PrizeRelativePos.X
-	remainingY := game.PrizeRelativePos.Y
-	if maxStepsA < maxStepsB {
-		for i := int64(0); i < maxStepsA; i++ {
-			if remainingX%stepBX == 0 && remainingY%stepBY == 0 {
-				multiplierX := remainingX / stepBX
-				multiplierY := remainingY / stepBY
-				// Both multipliers must match for a valid solution
-				if multiplierX == multiplierY {
-					cost := i*buttonA.Cost + multiplierX*buttonB.Cost
-					if cost < currentBestSolution {
-						hasSolution = true
-						currentBestSolution = cost
-					}
-				}
-			}
-			remainingX -= stepAX
-			remainingY -= stepAY
-		}
-	} else {
-		for i := int64(0); i < maxStepsB; i++ {
-			if remainingX%stepAX == 0 && remainingY%stepAY == 0 {
-				multiplierX := remainingX / stepAX
-				multiplierY := remainingY / stepAY
-				// Both multipliers must match for a valid solution
-				if multiplierX == multiplierY {
-					cost := i*buttonB.Cost + multiplierX*buttonA.Cost
-					if cost < currentBestSolution {
-						hasSolution = true
-						currentBestSolution = cost
-					}
-				}
-			}
-			remainingX -= stepBX
-			remainingY -= stepBY
-		}
+	det := buttonA.Pos.X*buttonB.Pos.Y - buttonA.Pos.Y*buttonB.Pos.X
+	a := (prizePos.X*buttonB.Pos.Y - prizePos.Y*buttonB.Pos.X) / det
+	b := (buttonA.Pos.X*prizePos.Y - buttonA.Pos.Y*prizePos.X) / det
+	if (buttonA.Pos.X*a+buttonB.Pos.X*b) == prizePos.X && (buttonA.Pos.Y*a+buttonB.Pos.Y*b) == prizePos.Y {
+		hasSolution = true
+		currentBestSolution = a*buttonA.Cost + b*buttonB.Cost
 	}
 	return currentBestSolution, hasSolution
 }
 
+// 329411766279 too low
+// 1309090909707 too low
+// 1679461281116
+// 699782137688
+// 2087564979058
 func main() {
 	filePath := "inputs/day13.txt"
 	lines, err := utils.ReadFile(filePath)
@@ -227,11 +200,11 @@ func main() {
 	ClawGames := MakeClawGamesFromStrings(lines)
 	for _, game := range ClawGames {
 		//Part2
-		//game.PrizeRelativePos.X += 10000000000000
-		//game.PrizeRelativePos.Y += 10000000000000
+		game.PrizeRelativePos.X += 10000000000000
+		game.PrizeRelativePos.Y += 10000000000000
 
 		fmt.Printf("%s\n", game)
-		res, hasSolution := naiveClawGameNoLimit(game, 90000000000000)
+		res, hasSolution := linearAlgebraBeatsMe(game, 100000000000000)
 		if hasSolution {
 			fmt.Printf("Solution: %d\n-----\n", res)
 			count += res
