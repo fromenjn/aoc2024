@@ -146,12 +146,10 @@ func countNumberOfSides(m [][]rune) int {
 	//for each row, check the  number of upper and lower sides
 	for i := 0; i < len(m); i++ {
 		nCount += checkNumberOfSides(m, i, U)
-		nCount += checkNumberOfSides(m, i, D)
 	}
 	//for each column, check the  number of left and right sides
 	for i := 0; i < len(m[0]); i++ {
 		nCount += checkNumberOfSides(m, i, L)
-		nCount += checkNumberOfSides(m, i, R)
 	}
 	return nCount
 }
@@ -179,7 +177,7 @@ func recursivePrice(m [][]rune, f FieldPosition, expected rune) (int, int) {
 }
 
 func main() {
-	filePath := "inputs/day12-sample.txt"
+	filePath := "inputs/day12.txt"
 	lines, err := utils.ReadFile(filePath)
 	if err != nil {
 		log.Fatalf("Error: %v\n", err)
