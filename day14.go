@@ -61,7 +61,7 @@ func (m *RobotMap) CountSafety() int {
 					safetyScore += 1
 				}
 			}
-			fmt.Printf("Quadrant (%d, %d) has safetyScore %d      | boundaries[(%d,%d), (%d,%d)]\n", i, j, safetyScore, startX, startY, endX, endY)
+			//fmt.Printf("Quadrant (%d, %d) has safetyScore %d      | boundaries[(%d,%d), (%d,%d)]\n", i, j, safetyScore, startX, startY, endX, endY)
 			scores = append(scores, safetyScore)
 		}
 	}
@@ -72,17 +72,22 @@ func (m *RobotMap) CountSafety() int {
 	return totalScore
 }
 
+func clearConsole() {
+	// ANSI escape code to clear screen and move cursor to top-left
+	fmt.Print("\033[H\033[2J")
+}
+
 func (m *RobotMap) Print() {
 	matrix := make([][]rune, m.sizeX)
 	for i := range matrix {
 		matrix[i] = make([]rune, m.sizeY)
 		for j := range matrix[i] {
-			matrix[i][j] = '.' // Fill with '.'
+			matrix[i][j] = ' ' // Fill with '.'
 		}
 	}
 	for _, r := range m.Robots {
 		c := matrix[r.Position.X][r.Position.Y]
-		if c == '.' {
+		if c == ' ' {
 			matrix[r.Position.X][r.Position.Y] = '1'
 		} else if c >= '1' && c <= '8' {
 			matrix[r.Position.X][r.Position.Y] = c + 1
@@ -138,7 +143,12 @@ func main() {
 	m := MakeRobotMapFromStrings(lines, sizeX, sizeY)
 	m.Print()
 	for i := int(0); i < nTurns; i++ {
+		//time.Sleep(1 * time.Second)
+		//clearConsole()
+		fmt.Printf("-----Turn %d:-----\n", i)
 		m.PlayTurn()
+		//_ = m.CountSafety()
+		m.Print()
 	}
 	fmt.Printf("-----After %d turns:-----\n", nTurns)
 	m.Print()
