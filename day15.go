@@ -38,48 +38,36 @@ func MakeRDFromChar(c rune) RD {
 func (r *RP) Move(m [][]rune, rd RD) bool {
 	curChar := m[r.X][r.Y]
 	nextPos := RP{X: r.X + rd.X, Y: r.Y + rd.Y}
+	res1 := true
+	res2 := true
 
 	if m[nextPos.X][nextPos.Y] == '#' {
 		return false
 	} else if m[nextPos.X][nextPos.Y] == '.' {
+		res1 = true
+	} else if m[nextPos.X][nextPos.Y] == 'O' {
+		res1 = nextPos.Move(m, rd)
+	} else if m[nextPos.X][nextPos.Y] == '[' {
+		otherHalf := RP{X: nextPos.X, Y: nextPos.Y + 1}
+		res1 = nextPos.Move(m, rd)
+		if res1 && rd.Y != 1 {
+			res2 = otherHalf.Move(m, rd)
+		}
+	} else if m[nextPos.X][nextPos.Y] == ']' {
+		otherHalf := RP{X: nextPos.X, Y: nextPos.Y - 1}
+		res1 = nextPos.Move(m, rd)
+		if res1 && rd.Y != -1 {
+			res2 = otherHalf.Move(m, rd)
+		}
+	}
+
+	if res1 && res2 {
 		m[r.X][r.Y] = '.'
 		m[nextPos.X][nextPos.Y] = curChar
 		return true
-	} else if m[nextPos.X][nextPos.Y] == 'O' {
-		res := nextPos.Move(m, rd)
-		if res {
-			m[r.X][r.Y] = '.'
-			m[nextPos.X][nextPos.Y] = curChar
-		}
-		return res
-	} else if m[nextPos.X][nextPos.Y] == '[' {
-		otherHalf := RP{X: nextPos.X, Y: nextPos.Y + 1}
-		res1 := nextPos.Move(m, rd)
-		res2 := true
-		if rd.Y != 1 {
-			res2 = otherHalf.Move(m, rd)
-		}
-		if res1 && res2 {
-			m[r.X][r.Y] = '.'
-			m[nextPos.X][nextPos.Y] = curChar
-			return true
-		}
-		return false
-	} else if m[nextPos.X][nextPos.Y] == ']' {
-		otherHalf := RP{X: nextPos.X, Y: nextPos.Y - 1}
-		res1 := nextPos.Move(m, rd)
-		res2 := true
-		if rd.Y != -1 {
-			res2 = otherHalf.Move(m, rd)
-		}
-		if res1 && res2 {
-			m[r.X][r.Y] = '.'
-			m[nextPos.X][nextPos.Y] = curChar
-			return true
-		}
-		return false
 	}
-	fmt.Printf("Error CanMove: %c (%d,%d)\n", m[nextPos.X][nextPos.Y], nextPos.X, nextPos.Y)
+
+	//fmt.Printf("Error CanMove: %c (%d,%d)\n", m[nextPos.X][nextPos.Y], nextPos.X, nextPos.Y)
 	return false
 }
 
